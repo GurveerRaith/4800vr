@@ -3,7 +3,112 @@ guid: 99ba172e240b4ec4f8baa44fe0a36a7d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: air_con
+    second: {fileID: 2100000, guid: ac5c01cee69b0584ab3a87d5e1373f9a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: blind
+    second: {fileID: 2100000, guid: d503319dba03c0e4a827156b8ded68aa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ceiling
+    second: {fileID: 2100000, guid: 6819f59a64ed789498402a2316037f7d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: chair
+    second: {fileID: 2100000, guid: d25e610972b055444ae3a5ce02708fc6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: com_desk
+    second: {fileID: 2100000, guid: 218f92f8f0651ef4f9485281e85e1f68, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: desk
+    second: {fileID: 2100000, guid: 661dd55d6bf1b1d4fab33f8068b2b664, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: door_props
+    second: {fileID: 2100000, guid: 792e346b874a91345bd2385268627d7f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: fireplug
+    second: {fileID: 2100000, guid: b4c0125b4013eca48ad280d62d1d0f04, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: floor
+    second: {fileID: 2100000, guid: 11ee0ddd7be338e48995da81524bfd78, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: floor.001
+    second: {fileID: 2100000, guid: dda51aa83317b094e9c850a9f0edba4c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: front_light
+    second: {fileID: 2100000, guid: e285b0de3601097469b29730b68e223e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: molding
+    second: {fileID: 2100000, guid: 88cc4d56971e3874097e7f9c1ea1eb1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pillars
+    second: {fileID: 2100000, guid: 49e64b3cb17b87c4a828d7ea12194a7a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: power_socket
+    second: {fileID: 2100000, guid: 42b2d759469f8654bb29c209892855bd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: screen
+    second: {fileID: 2100000, guid: 69bcedcb8a0c56f4987286b5383de7d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: t-desk
+    second: {fileID: 2100000, guid: 4b0c41d7cc35cc54c95022b4bf0b95c8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tdesk_TR
+    second: {fileID: 2100000, guid: 7d9f3a50568480b4fade598655697965, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: upper_molding
+    second: {fileID: 2100000, guid: a42c639423a0ec04b9f7a29f2b02c096, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wall_mat
+    second: {fileID: 2100000, guid: 2280b9a96e8b6d8459acafae33c24349, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: white_board
+    second: {fileID: 2100000, guid: 8206169a9cc4d7d488166377c89dc26c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wooden_wall
+    second: {fileID: 2100000, guid: f74df275adf513e4c96c5905634dd85e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
