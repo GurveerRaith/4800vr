@@ -20,16 +20,16 @@ public class TaskUIManager : MonoBehaviour
         switch (state)
         {
             case GameState.GiveMicrophone:
-                taskText.text = "Give the professor your FM microphone";
+                taskText.text = "Objective:\n Give the professor your FM microphone";
                 break;
             case GameState.SitDown:
-                taskText.text = "Sit down in your seat";
+                taskText.text = "Objective:\n Sit down in your seat";
                 break;
             case GameState.WatchingVideo:
-                taskText.text = "Watch the lecture";
+                taskText.text = "Objective:\n Watch the lecture";
                 break;
             case GameState.TakeQuiz:
-                taskText.text = "Answer the quiz on your phone";
+                taskText.text = "Objective:\n Answer the quiz on your phone";
                 break;
             default:
                 taskText.text = "";
