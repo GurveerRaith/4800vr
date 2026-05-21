@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.Video;
 
 public class QuizManager : MonoBehaviour {
     [Header("Content")]
@@ -10,6 +11,10 @@ public class QuizManager : MonoBehaviour {
     public GameObject scorePanel;
     public TextMeshProUGUI scoreText;
 
+    [Header("Video Setup")]
+    public VideoPlayer introVideo;
+    public GameObject videoDisplayObject;
+
     private int _currentIndex = 0;
     private int _score = 0;
 
@@ -17,6 +22,27 @@ public class QuizManager : MonoBehaviour {
         questionContent.onChoiceSelected += OnChoiceSelected;
         questionContent.onFeedbackComplete += OnFeedbackComplete;
         scorePanel.SetActive(false);
+        
+        questionContent.Hide(); 
+
+        if (videoDisplayObject != null) videoDisplayObject.SetActive(true);
+        introVideo.loopPointReached += OnVideoFinished;
+        if (!introVideo.isPlaying) introVideo.Play();
+
+    }
+
+    private void OnVideoFinished(VideoPlayer vp)
+    {
+        introVideo.loopPointReached -= OnVideoFinished;
+
+        if (videoDisplayObject != null) videoDisplayObject.SetActive(false);
+        
+        StartQuiz();
+    }
+
+    private void StartQuiz()
+    {
+        questionContent.Show();
         ShowCurrentQuestion();
     }
 
