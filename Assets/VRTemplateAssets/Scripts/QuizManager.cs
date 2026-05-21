@@ -40,7 +40,8 @@ public class QuizManager : MonoBehaviour {
     }
 
     private void ShowScore() {
-        questionContent.Hide();
+        questionContent.HideElements(); 
+        
         scorePanel.SetActive(true);
         scoreText.text = $"Score: {_score} / {questions.Length}";
     }
