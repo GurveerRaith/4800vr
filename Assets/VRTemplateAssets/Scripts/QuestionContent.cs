@@ -1,18 +1,31 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
+using System.Collections;
 
 public class QuestionContent : MonoBehaviour, IWhiteboardContent {
     [Header("UI References")]
     public TextMeshProUGUI questionText;
     public Button[] choiceButtons;
-    public TextMeshProUGUI[] choiceLabels;
+
+    [Header("Feedback")]
+    public GameObject feedbackPanel;
+    public TextMeshProUGUI feedbackText;
+    public float feedbackDuration = 1.5f;
+
+    public Action<int> onChoiceSelected;
+    public Action onFeedbackComplete;
 
     private QuestionData _currentQuestion;
 
     public void LoadQuestion(QuestionData data) {
         _currentQuestion = data;
         questionText.text = data.questionText;
+        feedbackPanel.SetActive(false);
+
+        foreach (var btn in choiceButtons)
+            btn.interactable = true;
 
         for (int i = 0; i < choiceButtons.Length; i++) {
             var label = choiceButtons[i].GetComponentInChildren<TextMeshProUGUI>();
@@ -25,15 +38,25 @@ public class QuestionContent : MonoBehaviour, IWhiteboardContent {
     }
 
     private void OnChoiceSelected(int index) {
-        bool correct = index == _currentQuestion.correctAnswerIndex;
-        Debug.Log(correct ? "Correct" : "Wrong");
+        foreach (var btn in choiceButtons)
+            btn.interactable = false;
+
+        onChoiceSelected?.Invoke(index);
     }
 
-    public void Show() {
-        gameObject.SetActive(true);
+    public void ShowFeedback(bool correct) {
+        feedbackPanel.SetActive(true);
+        feedbackText.text = correct ? "✓" : "✗";
+        feedbackText.color = correct ? Color.green : Color.red;
+        StartCoroutine(FeedbackRoutine());
     }
 
-    public void Hide() {
-        gameObject.SetActive(false);
+    private IEnumerator FeedbackRoutine() {
+        yield return new WaitForSeconds(feedbackDuration);
+        feedbackPanel.SetActive(false);
+        onFeedbackComplete?.Invoke();
     }
+
+    public void Show() => gameObject.SetActive(true);
+    public void Hide() => gameObject.SetActive(false);
 }
