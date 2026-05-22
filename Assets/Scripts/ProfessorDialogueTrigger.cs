@@ -23,7 +23,11 @@ public class ProfessorDialogueTrigger : MonoBehaviour
     [SerializeField] private Transform playerHead;
     [Tooltip("The teacher transform that will rotate to face the player. Leave empty to use this object's root.")]
     [SerializeField] private Transform teacherRoot;
-    [Tooltip("Where the mic should snap onto the teacher after handoff. If empty, the mic is hidden instead.")]
+    [Tooltip("When true, the mic is hidden (SetActive false) the moment it's handed off. " +
+             "Overrides the snap-to-hold-point behavior.")]
+    [SerializeField] private bool hideMicAfterHandoff = true;
+    [Tooltip("Where the mic should snap onto the teacher after handoff. Ignored if " +
+             "hideMicAfterHandoff is true. If empty AND hide is false, the mic is hidden anyway.")]
     [SerializeField] private Transform micHoldPoint;
     [Tooltip("Tick this if the teacher ends up facing AWAY from the player. Flips her facing 180°.")]
     [SerializeField] private bool flipTeacherFacing = false;
@@ -176,16 +180,16 @@ public class ProfessorDialogueTrigger : MonoBehaviour
         foreach (var col in mic.GetComponentsInChildren<Collider>())
             col.enabled = false;
 
-        if (micHoldPoint != null)
+        if (hideMicAfterHandoff || micHoldPoint == null)
+        {
+            // Just make it disappear.
+            mic.gameObject.SetActive(false);
+        }
+        else
         {
             mic.transform.SetParent(micHoldPoint, worldPositionStays: false);
             mic.transform.localPosition = Vector3.zero;
             mic.transform.localRotation = Quaternion.identity;
-        }
-        else
-        {
-            // No designated hold point — just hide the mic so it doesn't drop in mid-air.
-            mic.gameObject.SetActive(false);
         }
     }
 

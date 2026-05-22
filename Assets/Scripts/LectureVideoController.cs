@@ -1,76 +1,98 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Video;
 
+/// Drives the lecture video on the big classroom screen.
+///
+/// Triggers off `ProfessorAnnouncement.OnAnnouncementFinished` — fired by
+/// ProfessorAnnouncement the moment the WAV clip ends, regardless of whether the
+/// FM battery actually died first. After the event fires:
+///   1. Wait `videoStartDelaySeconds` (default 3s).
+///   2. Hide the thumbnail/intro image, play the video.
+///   3. When the video finishes, set state to TakeQuiz.
 public class LectureVideoController : MonoBehaviour
 {
+    [Header("Video")]
+    [Tooltip("The VideoPlayer on the big classroom screen (cc_video_player).")]
     [SerializeField] private VideoPlayer videoPlayer;
-    [SerializeField] private AudioSource professorAudio;
-    [SerializeField] private float fmBatteryDiesAt = 45f; // Seconds into video
-    [SerializeField] private GameObject confusionUI;
 
-    void OnEnable()
+    [Tooltip("The RawImage that displays the video output on the screen (in the screen prefab, " +
+             "this is the GameObject called VideoImage). Kept hidden until playback starts, " +
+             "then activated so the video is visible.")]
+    [FormerlySerializedAs("videoImage")]
+    [SerializeField] private GameObject videoDisplay;
+
+    [Header("Timing")]
+    [Tooltip("Delay between the professor finishing and the video starting.")]
+    [SerializeField] private float videoStartDelaySeconds = 3f;
+
+    private bool hasPlayedVideo = false;
+    private bool subscribed = false;
+
+    void Start()
     {
-        GameStateManager.Instance.OnStateChanged.AddListener(OnStateChanged);
+        // Ensure the video doesn't auto-play. We want full control.
+        if (videoPlayer != null)
+        {
+            videoPlayer.playOnAwake = false;
+            if (videoPlayer.isPlaying) videoPlayer.Stop();
+        }
+
+        // Hide the display surface until the video actually starts.
+        if (videoDisplay != null) videoDisplay.SetActive(false);
+
+        Subscribe();
     }
+
+    void OnEnable() => Subscribe();
 
     void OnDisable()
     {
-        GameStateManager.Instance.OnStateChanged.RemoveListener(OnStateChanged);
+        if (!subscribed) return;
+        ProfessorAnnouncement.OnAnnouncementFinished -= HandleAnnouncementFinished;
+        subscribed = false;
     }
 
-    void OnStateChanged(GameState state)
+    private void Subscribe()
     {
-        if (state == GameState.WatchingVideo)
-            StartCoroutine(RunLecture());
+        if (subscribed) return;
+        ProfessorAnnouncement.OnAnnouncementFinished += HandleAnnouncementFinished;
+        subscribed = true;
+        Debug.Log($"[{nameof(LectureVideoController)}] Subscribed to ProfessorAnnouncement.OnAnnouncementFinished.", this);
     }
 
-    // TODO: Implement FM battery death and confusion moment 
-    IEnumerator RunLecture()
+    private void HandleAnnouncementFinished()
     {
-        yield return new WaitForSeconds(5f); // Brief pause before video starts
-        Debug.Log("Video played");
-        // videoPlayer.Play();
-        // professorAudio.Play();
-
-        // Wait for FM battery death moment
-        // yield return new WaitForSeconds(fmBatteryDiesAt);
-        // KillFMBattery();
-
-        // Wait for video to finish
-        // yield return new WaitUntil(() => !videoPlayer.isPlaying);
-
-        GameStateManager.Instance.SetState(GameState.TakeQuiz);
-        Debug.Log("TakeQuiz state");
+        if (hasPlayedVideo) return;
+        hasPlayedVideo = true;
+        Debug.Log($"[{nameof(LectureVideoController)}] Prof announcement done — starting video sequence.", this);
+        StartCoroutine(PlayVideoAfterDelay());
     }
 
-    // void KillFMBattery()
-    // {
-    //     GameStateManager.Instance.SetState(GameState.FMBatteryDead);
+    private IEnumerator PlayVideoAfterDelay()
+    {
+        yield return new WaitForSeconds(videoStartDelaySeconds);
 
-    //     StartCoroutine(FadeOutAudio(professorAudio, 1.5f));
+        // Activate the display surface so the player can see the video.
+        if (videoDisplay != null) videoDisplay.SetActive(true);
 
-    //     if (confusionUI != null) confusionUI.SetActive(true);
+        if (videoPlayer == null)
+        {
+            Debug.LogError($"[{nameof(LectureVideoController)}] No VideoPlayer wired — cannot play.", this);
+            yield break;
+        }
 
-    //     StartCoroutine(ResumeWatching());
-    // }
+        videoPlayer.loopPointReached += OnVideoFinished;
+        videoPlayer.Play();
+        Debug.Log($"[{nameof(LectureVideoController)}] Video playing.", this);
+    }
 
-    // IEnumerator ResumeWatching()
-    // {
-    //     yield return new WaitForSeconds(2f);
-    //     GameStateManager.Instance.SetState(GameState.WatchingVideo);
-    // }
-
-    // IEnumerator FadeOutAudio(AudioSource source, float duration)
-    // {
-    //     float startVolume = source.volume;
-    //     float elapsed = 0f;
-    //     while (elapsed < duration)
-    //     {
-    //         source.volume = Mathf.Lerp(startVolume, 0f, elapsed / duration);
-    //         elapsed += Time.deltaTime;
-    //         yield return null;
-    //     }
-    //     source.Stop();
-    // }
+    private void OnVideoFinished(VideoPlayer vp)
+    {
+        vp.loopPointReached -= OnVideoFinished;
+        Debug.Log($"[{nameof(LectureVideoController)}] Video finished — TakeQuiz state.", this);
+        if (GameStateManager.Instance != null)
+            GameStateManager.Instance.SetState(GameState.TakeQuiz);
+    }
 }
